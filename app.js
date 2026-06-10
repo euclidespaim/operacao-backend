@@ -7,8 +7,9 @@ let checkInterval = null;
 // Initialize Elements
 document.addEventListener('DOMContentLoaded', () => {
   initSoundSystem();
+  initAccordion();
   initNavigation();
-  initProgressTracker(); // Must run after navigation to set checkboxes states
+  initProgressTracker(); // Must run after navigation to restore checklist states
   initTerminalSimulator();
   initMetaphorSimulator();
   initClipboardCopier();
@@ -146,20 +147,56 @@ function playBeep(type) {
 }
 
 // -------------------------------------------------------------
+// SIDEBAR CLASS ACCORDION TOGGLER
+// -------------------------------------------------------------
+function initAccordion() {
+  const groups = document.querySelectorAll('.class-accordion-group');
+  
+  groups.forEach(group => {
+    const header = group.querySelector('.accordion-header');
+    
+    header.addEventListener('click', (e) => {
+      // Prevent accordion collapse when clicking inside the expanded body
+      if (e.target.closest('.accordion-body')) return;
+      
+      const isExpanded = group.classList.contains('expanded');
+      
+      // Collapse all other accordion groups
+      groups.forEach(g => {
+        if (g !== group) {
+          g.classList.remove('expanded');
+        }
+      });
+      
+      // Toggle current accordion folder
+      group.classList.toggle('expanded', !isExpanded);
+      playBeep('click');
+    });
+  });
+}
+
+// -------------------------------------------------------------
 // NAVIGATION PANEL WITH LOCAL STORAGE STATE PERSISTENCE
 // -------------------------------------------------------------
 function initNavigation() {
   const buttons = document.querySelectorAll('.mission-btn');
   const sections = document.querySelectorAll('.content-section');
+  const groups = document.querySelectorAll('.class-accordion-group');
   
-  // Load saved tab from localStorage or default to sec1
-  const savedTab = localStorage.getItem('activeTab') || 'sec1';
+  const savedTab = localStorage.getItem('activeTab') || 'aula1-mod1';
   
   function activateTab(sectionId) {
     buttons.forEach(b => {
       b.classList.remove('active');
       if (b.getAttribute('data-section') === sectionId) {
         b.classList.add('active');
+        
+        // Find parent accordion group and auto-expand it
+        const parentGroup = b.closest('.class-accordion-group');
+        if (parentGroup && !parentGroup.classList.contains('expanded')) {
+          groups.forEach(g => g.classList.remove('expanded'));
+          parentGroup.classList.add('expanded');
+        }
       }
     });
     
@@ -170,7 +207,6 @@ function initNavigation() {
       }
     });
     
-    // Save state to localStorage
     localStorage.setItem('activeTab', sectionId);
     
     // Update labels inside the buttons
@@ -205,6 +241,7 @@ function initProgressTracker() {
   const checkboxes = document.querySelectorAll('.checklist-checkbox');
   const progressBar = document.getElementById('mission-progress-bar');
   const progressPercentText = document.getElementById('mission-progress-percent');
+  const buttons = document.querySelectorAll('.mission-btn');
   
   // Load checked states from localStorage
   checkboxes.forEach((cb, index) => {
@@ -221,14 +258,12 @@ function initProgressTracker() {
     progressBar.style.width = `${percentage}%`;
     progressPercentText.textContent = `${percentage}% CONCLUÍDO`;
     
-    // Update individual section buttons status
-    const sections = ['sec1', 'sec2', 'sec3', 'sec4', 'sec5'];
-    
-    sections.forEach(secId => {
-      const secCheckboxes = document.querySelectorAll(`.checklist-checkbox[data-section="${secId}"]`);
+    // Update completion indicators for all 25 modules
+    buttons.forEach(btn => {
+      const sectionId = btn.getAttribute('data-section');
+      const secCheckboxes = document.querySelectorAll(`.checklist-checkbox[data-section="${sectionId}"]`);
       const secChecked = Array.from(secCheckboxes).filter(cb => cb.checked).length;
       const secTotal = secCheckboxes.length;
-      const btn = document.getElementById(`btn-${secId}`);
       const statusLabel = btn.querySelector('.mission-status-label');
       
       if (secChecked === secTotal && secTotal > 0) {
@@ -270,7 +305,7 @@ function initProgressTracker() {
 }
 
 // -------------------------------------------------------------
-// TERMINAL SIMULATOR (Sanity Check in Module 2)
+// TERMINAL SIMULATOR (Sanity Check in Module 1.2)
 // -------------------------------------------------------------
 function initTerminalSimulator() {
   const btnNode = document.getElementById('btn-sim-node');
@@ -291,7 +326,6 @@ function initTerminalSimulator() {
     
     playBeep('click');
     
-    // Append prompt line
     const commandLine = document.createElement('div');
     commandLine.className = 'sim-line';
     commandLine.innerHTML = `
@@ -303,7 +337,6 @@ function initTerminalSimulator() {
     const inputSpan = commandLine.querySelector('.sim-input');
     let index = 0;
     
-    // Type writer effect for command text
     const typingTimer = setInterval(() => {
       if (index < commandText.length) {
         inputSpan.textContent += commandText.charAt(index);
@@ -312,20 +345,17 @@ function initTerminalSimulator() {
       } else {
         clearInterval(typingTimer);
         
-        // Print output line after typing is done
         setTimeout(() => {
           const outputLine = document.createElement('div');
           outputLine.className = 'sim-output';
           outputLine.textContent = outputText;
           outputArea.appendChild(outputLine);
           
-          // Print next prompt line
           const readyLine = document.createElement('div');
           readyLine.className = 'sim-line';
           readyLine.innerHTML = `<span class="sim-prompt">$</span>`;
           outputArea.appendChild(readyLine);
           
-          // Auto scroll terminal to bottom
           outputArea.scrollTop = outputArea.scrollHeight;
           
           playBeep('success');
@@ -335,28 +365,34 @@ function initTerminalSimulator() {
     }, 60);
   }
   
-  btnNode.addEventListener('click', () => {
-    printCommand('node -v', commands['node -v']);
-  });
+  if (btnNode) {
+    btnNode.addEventListener('click', () => {
+      printCommand('node -v', commands['node -v']);
+    });
+  }
   
-  btnNpm.addEventListener('click', () => {
-    printCommand('npm -v', commands['npm -v']);
-  });
+  if (btnNpm) {
+    btnNpm.addEventListener('click', () => {
+      printCommand('npm -v', commands['npm -v']);
+    });
+  }
   
-  btnClear.addEventListener('click', () => {
-    if (typingInProgress) return;
-    playBeep('click');
-    outputArea.innerHTML = `
-      <div class="sim-line">
-        <span class="sim-prompt">$</span>
-        <span class="sim-input"></span>
-      </div>
-    `;
-  });
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      if (typingInProgress) return;
+      playBeep('click');
+      outputArea.innerHTML = `
+        <div class="sim-line">
+          <span class="sim-prompt">$</span>
+          <span class="sim-input"></span>
+        </div>
+      `;
+    });
+  }
 }
 
 // -------------------------------------------------------------
-// INTERACTIVE METAPHOR (Flow Diagram)
+// INTERACTIVE METAPHOR (Flow Diagram in Module 1.1)
 // -------------------------------------------------------------
 function initMetaphorSimulator() {
   const nodes = {
@@ -375,66 +411,70 @@ function initMetaphorSimulator() {
   };
   
   function clearHighlights() {
-    Object.values(nodes).forEach(n => n.classList.remove('highlighted'));
-    packet1.style.animation = 'none';
-    packet2.style.animation = 'none';
+    Object.values(nodes).forEach(n => {
+      if (n) n.classList.remove('highlighted');
+    });
+    if (packet1) packet1.style.animation = 'none';
+    if (packet2) packet2.style.animation = 'none';
   }
   
-  nodes.salon.addEventListener('click', () => {
-    clearHighlights();
-    nodes.salon.classList.add('highlighted');
-    descBox.textContent = descriptions.frontend;
-    playBeep('packet');
-    
-    // Animate packet Salon -> Waiter (Forward)
-    packet1.style.animation = 'flowForward 0.6s linear forwards';
-    
-    setTimeout(() => {
-      nodes.waiter.classList.add('highlighted');
-      playBeep('click');
-    }, 600);
-  });
-  
-  nodes.waiter.addEventListener('click', () => {
-    clearHighlights();
-    nodes.waiter.classList.add('highlighted');
-    descBox.textContent = descriptions.api;
-    playBeep('packet');
-    
-    // Animate packet Salon -> Waiter -> Kitchen and back
-    packet1.style.animation = 'flowForward 0.4s linear forwards';
-    setTimeout(() => {
-      packet2.style.animation = 'flowForward 0.4s linear forwards';
-      nodes.kitchen.classList.add('highlighted');
-      playBeep('click');
+  if (nodes.salon) {
+    nodes.salon.addEventListener('click', () => {
+      clearHighlights();
+      nodes.salon.classList.add('highlighted');
+      descBox.textContent = descriptions.frontend;
+      playBeep('packet');
       
-      // Response cycle back
+      packet1.style.animation = 'flowForward 0.6s linear forwards';
+      
       setTimeout(() => {
-        packet2.style.animation = 'flowBackward 0.4s linear forwards';
-        playBeep('packet');
-        setTimeout(() => {
-          packet1.style.animation = 'flowBackward 0.4s linear forwards';
-          nodes.salon.classList.add('highlighted');
-          playBeep('success');
-        }, 400);
+        if (nodes.waiter) nodes.waiter.classList.add('highlighted');
+        playBeep('click');
       }, 600);
-    }, 400);
-  });
+    });
+  }
   
-  nodes.kitchen.addEventListener('click', () => {
-    clearHighlights();
-    nodes.kitchen.classList.add('highlighted');
-    descBox.textContent = descriptions.backend;
-    playBeep('packet');
-    
-    // Animate response Kitchen -> Waiter
-    packet2.style.animation = 'flowBackward 0.6s linear forwards';
-    
-    setTimeout(() => {
+  if (nodes.waiter) {
+    nodes.waiter.addEventListener('click', () => {
+      clearHighlights();
       nodes.waiter.classList.add('highlighted');
-      playBeep('click');
-    }, 600);
-  });
+      descBox.textContent = descriptions.api;
+      playBeep('packet');
+      
+      packet1.style.animation = 'flowForward 0.4s linear forwards';
+      setTimeout(() => {
+        packet2.style.animation = 'flowForward 0.4s linear forwards';
+        if (nodes.kitchen) nodes.kitchen.classList.add('highlighted');
+        playBeep('click');
+        
+        setTimeout(() => {
+          packet2.style.animation = 'flowBackward 0.4s linear forwards';
+          playBeep('packet');
+          setTimeout(() => {
+            packet1.style.animation = 'flowBackward 0.4s linear forwards';
+            if (nodes.salon) nodes.salon.classList.add('highlighted');
+            playBeep('success');
+          }, 400);
+        }, 600);
+      }, 400);
+    });
+  }
+  
+  if (nodes.kitchen) {
+    nodes.kitchen.addEventListener('click', () => {
+      clearHighlights();
+      nodes.kitchen.classList.add('highlighted');
+      descBox.textContent = descriptions.backend;
+      playBeep('packet');
+      
+      packet2.style.animation = 'flowBackward 0.6s linear forwards';
+      
+      setTimeout(() => {
+        if (nodes.waiter) nodes.waiter.classList.add('highlighted');
+        playBeep('click');
+      }, 600);
+    });
+  }
 }
 
 // -------------------------------------------------------------
@@ -452,7 +492,6 @@ function initClipboardCopier() {
         navigator.clipboard.writeText(codeElement.innerText).then(() => {
           playBeep('success');
           
-          // Visual Feedback inside button
           const originalText = btn.querySelector('span').textContent;
           btn.querySelector('span').textContent = 'Copiado!';
           btn.style.color = 'var(--neon-green)';
@@ -480,6 +519,7 @@ function initLocalServerChecker() {
   const footerVal = document.getElementById('footer-connection-val');
   
   async function pingServer() {
+    if (!indicator) return;
     indicator.className = 'status-dot checking';
     
     try {
@@ -500,17 +540,18 @@ function initLocalServerChecker() {
         }
         localServerOnline = true;
         
-        // Update HUD UI
         indicator.className = 'status-dot online';
         statusText.textContent = 'API LOCAL ONLINE (PORTA 3000)';
         
-        // Update Section 3 Live Panel
-        badge.textContent = 'CONECTADO';
-        badge.className = 'live-panel-status connected';
+        if (badge) {
+          badge.textContent = 'CONECTADO';
+          badge.className = 'live-panel-status connected';
+        }
         
-        // Update Sidebar Footer
-        footerVal.textContent = 'ONLINE';
-        footerVal.style.color = 'var(--neon-green)';
+        if (footerVal) {
+          footerVal.textContent = 'ONLINE';
+          footerVal.style.color = 'var(--neon-green)';
+        }
         
         renderAgents(data);
       } else {
@@ -522,17 +563,18 @@ function initLocalServerChecker() {
       }
       localServerOnline = false;
       
-      // Update HUD UI
       indicator.className = 'status-dot';
       statusText.textContent = 'API LOCAL OFFLINE';
       
-      // Update Section 3 Live Panel
-      badge.textContent = 'DESCONECTADO';
-      badge.className = 'live-panel-status';
+      if (badge) {
+        badge.textContent = 'DESCONECTADO';
+        badge.className = 'live-panel-status';
+      }
       
-      // Update Sidebar Footer
-      footerVal.textContent = 'OFFLINE';
-      footerVal.style.color = '';
+      if (footerVal) {
+        footerVal.textContent = 'OFFLINE';
+        footerVal.style.color = '';
+      }
       
       resetAgentsContainer();
     }
@@ -544,6 +586,7 @@ function initLocalServerChecker() {
 
 function renderAgents(agents) {
   const container = document.getElementById('live-agents-container');
+  if (!container) return;
   container.innerHTML = '';
   
   if (agents.length === 0) {
@@ -578,6 +621,7 @@ function renderAgents(agents) {
 
 function resetAgentsContainer() {
   const container = document.getElementById('live-agents-container');
+  if (!container) return;
   container.innerHTML = `
     <div class="agent-tag-card" style="border-color: rgba(255, 56, 96, 0.15); opacity: 0.7; grid-column: 1 / -1;">
       <div class="agent-info">
@@ -606,10 +650,11 @@ function escapeHTML(str) {
 // SANDBOX FORM CONTROLLER (POST, PUT, DELETE Client Operations)
 // -------------------------------------------------------------
 function initSandboxCrud() {
-  const form = document.getElementById('sandbox-post-form');
   const btnPost = document.getElementById('btn-submit-post');
   const btnPut = document.getElementById('btn-submit-put');
   const btnDelete = document.getElementById('btn-submit-delete');
+  
+  if (!btnPost) return; // Only bind if dashboard form elements exist in current DOM view
   
   function getInputs() {
     const id = document.getElementById('sandbox-agent-id').value.trim();
