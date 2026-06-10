@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operação Backend - Aula Inaugural</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='5' y='5' width='90' height='90' rx='15' fill='%230a0e17' stroke='%2300ff66' stroke-width='8'/%3E%3Ctext x='18' y='70' font-size='60' font-family='monospace' font-weight='bold' fill='%2300ff66'%3E%3E_%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Grid Matrix background effect -->
+  <div class="grid-bg"></div>
+
+  <div class="app-container">
+    
+    <!-- HUD Top Header -->
+    <header class="hud-header">
+      <div class="hud-title-group">
+        <div class="logo-icon">&gt;_</div>
+        <div class="hud-title-text">
+          <h1>OPERAÇÃO BACKEND</h1>
+          <span>AULA INAUGURAL // CONTROLE DE MISSÃO</span>
+        </div>
+      </div>
+
+      <!-- Class Time Progress Tracker -->
+      <div class="hud-timeline-container">
+        <div class="timeline-info">
+          <span>PROGRESSO DOS MÓDULOS</span>
+          <span id="mission-progress-percent">0% CONCLUÍDO</span>
+        </div>
+        <div class="timeline-bar-bg">
+          <div class="timeline-bar-fill" id="mission-progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- System Widgets -->
+      <div class="hud-widgets">
+        <div class="widget-status" id="server-status-widget">
+          <div class="status-dot checking" id="status-indicator"></div>
+          <span id="status-text">MONITORANDO PORTA 3000...</span>
+        </div>
+        <div class="widget-audio">
+          <button class="btn-icon" id="audio-toggle" title="Alternar Efeitos Sonoros">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="workspace-grid">
+      
+      <!-- Left Navigation Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-title">Painel de Missões</div>
+        <ul class="mission-list">
+          
+          <li class="mission-item">
+            <button class="mission-btn active" data-section="sec1" id="btn-sec1">
+              <div class="mission-meta">
+                <span class="mission-tag">Módulo 01 / Teoria</span>
+                <span class="mission-duration">15 Min</span>
+              </div>
+              <span class="mission-title">O Lado Oculto da Web</span>
+              <div class="mission-status">
+                <div class="mission-status-dot"></div>
+                <span class="mission-status-label">Em andamento</span>
+              </div>
+            </button>
+          </li>
+
+          <li class="mission-item">
+            <button class="mission-btn" data-section="sec2" id="btn-sec2">
+              <div class="mission-meta">
+                <span class="mission-tag">Módulo 02 / Ignição</span>
+                <span class="mission-duration">15 Min</span>
+              </div>
+              <span class="mission-title">Subindo o Servidor</span>
+              <div class="mission-status">
+                <div class="mission-status-dot"></div>
+                <span class="mission-status-label">Pendente</span>
+              </div>
+            </button>
+          </li>
+
+          <li class="mission-item">
+            <button class="mission-btn" data-section="sec3" id="btn-sec3">
+              <div class="mission-meta">
+                <span class="mission-tag">Módulo 03 / Combate</span>
+                <span class="mission-duration">25 Min</span>
+              </div>
+              <span class="mission-title">Operações CRUD</span>
+              <div class="mission-status">
+                <div class="mission-status-dot"></div>
+                <span class="mission-status-label">Pendente</span>
+              </div>
+            </button>
+          </li>
+
+          <li class="mission-item">
+            <button class="mission-btn" data-section="sec4" id="btn-sec4">
+              <div class="mission-meta">
+                <span class="mission-tag">Módulo 04 / Integração</span>
+                <span class="mission-duration">20 Min</span>
+              </div>
+              <span class="mission-title">Conectando Frontend</span>
+              <div class="mission-status">
+                <div class="mission-status-dot"></div>
+                <span class="mission-status-label">Pendente</span>
+              </div>
+            </button>
+          </li>
+
+          <li class="mission-item">
+            <button class="mission-btn" data-section="sec5" id="btn-sec5">
+              <div class="mission-meta">
+                <span class="mission-tag">Módulo 05 / Salvamento</span>
+                <span class="mission-duration">15 Min</span>
+              </div>
+              <span class="mission-title">Protocolo de Extração</span>
+              <div class="mission-status">
+                <div class="mission-status-dot"></div>
+                <span class="mission-status-label">Pendente</span>
+              </div>
+            </button>
+          </li>
+
+        </ul>
+
+        <div class="sidebar-footer">
+          <div class="footer-stats">
+            <div class="stat-row">
+              <span>SISTEMA:</span>
+              <span class="stat-val">OPERACIONAL</span>
+            </div>
+            <div class="stat-row">
+              <span>CONEXÃO LOCAL:</span>
+              <span class="stat-val" id="footer-connection-val">OFFLINE</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Display Panel -->
+      <main class="main-content">
+        
+        <!-- SECTION 1: O LADO OCULTO DA WEB -->
+        <section class="content-section active" id="sec1">
+          <div class="section-header">
+            <div class="section-subtitle">
+              <span>Módulo 01 // Fundamentos Teóricos</span>
+              <span class="env-badge browser">Navegador</span>
+            </div>
+            <h2 class="section-title">Bem-vindos à Matrix: O que é o Backend?</h2>
+            <div class="section-time-indicator">⏱ 15 Minutos</div>
+          </div>
+
+          <p style="margin-bottom: 24px;">
+            Enquanto o <strong>Frontend</strong> roda diretamente no dispositivo do usuário (construindo a interface visual e capturando interações), o <strong>Backend</strong> processa a lógica de negócios, gerencia permissões e lê/escreve dados em um repositório centralizado de forma segura.
+          </p>
+
+          <!-- Deep Theoretical Panels: HTTP Structure & CORS -->
+          <div class="grid-cards">
+            <div class="cyber-card green">
+              <div class="card-icon">📁</div>
+              <h3 class="card-title">Anatomia do HTTP</h3>
+              <p class="card-content" style="font-size: 0.85rem;">
+                A comunicação Cliente-Servidor ocorre via protocolo <strong>HTTP</strong>. Toda requisição possui:<br>
+                • <strong>Método (Verbo)</strong>: Ação solicitada (GET, POST, PUT, DELETE).<br>
+                • <strong>URL/Endpoint</strong>: O caminho do recurso.<br>
+                • <strong>Headers</strong>: Metadados (ex: tipo de dados enviado).<br>
+                • <strong>Body (Payload)</strong>: Os dados enviados em formato JSON.
+              </p>
+            </div>
+            
+            <div class="cyber-card">
+              <div class="card-icon">🖧</div>
+              <h3 class="card-title">Códigos de Status (HTTP)</h3>
+              <p class="card-content" style="font-size: 0.85rem;">
+                O servidor responde com códigos padronizados:<br>
+                • <strong>200 OK / 201 Created</strong>: Operação bem sucedida.<br>
+                • <strong>400 Bad Request</strong>: Erro na estrutura enviada.<br>
+                • <strong>404 Not Found</strong>: O endpoint não existe.<br>
+                • <strong>500 Internal Error</strong>: Falha no processamento do servidor.
+              </p>
+            </div>
+
+            <div class="cyber-card yellow">
+              <div class="card-icon">🛡</div>
+              <h3 class="card-title">Mecanismo de CORS</h3>
+              <p class="card-content" style="font-size: 0.85rem;">
+                <strong>Cross-Origin Resource Sharing</strong> é uma barreira de segurança. O navegador impede que uma página em uma origem (ex: seu site de aulas) faça requisições automáticas a outra origem (ex: seu servidor local) sem permissão. O <code>json-server</code> libera isso definindo headers especiais.
+              </p>
+            </div>
+          </div>
+
+          <!-- Metáfora do Restaurante -->
+          <div class="interactive-metaphor-box">
+            <h3 class="card-title" style="color: var(--neon-cyan); margin-bottom: 8px;">Mapeamento de Dados (Fluxo Técnico)</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
+              Clique nos componentes abaixo para disparar o trajeto das mensagens HTTP e ver a distribuição dos dados:
+            </p>
+
+            <div class="metaphor-nodes">
+              <!-- Frontend / Salão -->
+              <div class="metaphor-node" id="node-salon" data-desc="frontend">
+                <h4>O Cliente</h4>
+                <span>Frontend (Navegador)</span>
+              </div>
+              
+              <!-- Connector 1 -->
+              <div class="metaphor-connector" id="conn-1">
+                <div class="metaphor-packet" id="packet-1"></div>
+              </div>
+
+              <!-- API / Garçom -->
+              <div class="metaphor-node" id="node-waiter" data-desc="api">
+                <h4>A Requisição</h4>
+                <span>Mensagem HTTP (CORS)</span>
+              </div>
+
+              <!-- Connector 2 -->
+              <div class="metaphor-connector" id="conn-2">
+                <div class="metaphor-packet" id="packet-2"></div>
+              </div>
+
+              <!-- Backend / Cozinha -->
+              <div class="metaphor-node" id="node-kitchen" data-desc="backend">
+                <h4>O Servidor</h4>
+                <span>Banco de Dados JSON</span>
+              </div>
+            </div>
+
+            <div class="metaphor-desc-box" id="metaphor-desc">
+              Selecione um componente para interceptar os dados e visualizar o tráfego HTTP.
+            </div>
+          </div>
+
+          <!-- Section Checklist -->
+          <div class="checklist-container">
+            <div class="checklist-title">Checklist do Módulo 01</div>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec1">
+              <span class="checklist-text">Compreendi os conceitos de Frontend (Cliente) e Backend (Servidor).</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec1">
+              <span class="checklist-text">Entendi a estrutura de uma requisição HTTP (Método, Endpoint, Body).</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec1">
+              <span class="checklist-text">Entendi o que são os códigos de status (200, 201, 404, 500).</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec1">
+              <span class="checklist-text">Compreendi o propósito do mecanismo de segurança CORS.</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- SECTION 2: SUBINDO O SERVIDOR -->
+        <section class="content-section" id="sec2">
+          <div class="section-header">
+            <div class="section-subtitle">
+              <span>Módulo 02 // Inicialização Local</span>
+              <span class="env-badge vscode">VS Code</span>
+            </div>
+            <h2 class="section-title">Subindo seu Primeiro Servidor</h2>
+            <div class="section-time-indicator">⏱ 15 Minutos</div>
+          </div>
+
+          <p style="margin-bottom: 24px;">
+            Usaremos o <strong>json-server</strong> como nossa ferramenta local para simular um servidor real e um banco de dados relacional a partir de um arquivo JSON. Siga as etapas abaixo no VS Code de sua máquina:
+          </p>
+
+          <div class="step-container">
+            <!-- Passo 1 -->
+            <div class="step-card">
+              <div class="step-badge">01</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  Criar Diretório de Trabalho
+                  <span class="env-badge vscode">VS Code</span>
+                </h3>
+                <p class="step-desc">
+                  Crie uma pasta em sua Área de Trabalho chamada <code>missao-backend</code>.<br>
+                  Abra o <strong>VS Code</strong>, clique em <em>File > Open Folder</em> e selecione a pasta criada.
+                </p>
+              </div>
+            </div>
+
+            <!-- Passo 2 -->
+            <div class="step-card">
+              <div class="step-badge">02</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  O Arquivo de Banco de Dados
+                  <span class="env-badge vscode">VS Code</span>
+                </h3>
+                <p class="step-desc">
+                  No VS Code, crie um arquivo chamado <code>db.json</code>, insira o seguinte conteúdo e salve:
+                </p>
+
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">JSON (db.json)</span>
+                    <button class="btn-copy" data-clipboard="db-json-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="db-json-code">{
+  "agentes": [
+    { "id": "1", "nome": "Neo", "status": "Ativo" },
+    { "id": "2", "nome": "Trinity", "status": "Oculto" }
+  ]
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Passo 3 -->
+            <div class="step-card">
+              <div class="step-badge">03</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  Inicialização do Servidor
+                  <span class="env-badge vscode">VS Code</span>
+                </h3>
+                <p class="step-desc">
+                  Abra o terminal integrado do VS Code (<code>Ctrl + '</code>) e execute o comando abaixo para iniciar o listener do servidor:
+                </p>
+
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">Terminal</span>
+                    <button class="btn-copy" data-clipboard="npx-command-code">
+                      <span>Copiar comando</span>
+                    </button>
+                  </div>
+                  <pre><code id="npx-command-code">npx json-server@0.17.4 db.json</code></pre>
+                </div>
+                
+                <!-- Developer Note about json-server version differences -->
+                <div class="cyber-alert warning" style="margin-top: 12px; margin-bottom: 0; padding: 12px 16px;">
+                  <span class="cyber-alert-icon" style="font-size: 1rem;">ℹ️</span>
+                  <div class="cyber-alert-text" style="font-size: 0.8rem;">
+                    <strong>Por que especificar a versão @0.17.4?</strong>
+                    A versão mais recente (v1.x) do <code>json-server</code> ignora o ID enviado na requisição POST e gera um ID aleatório alfanumérico (ex: <code>lh7K8</code>) para evitar conflitos de dados. Usando a versão estável <code>@0.17.4</code>, o servidor respeitará exatamente os IDs que enviarmos (ID 3 para Morpheus).
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Passo 4 -->
+            <div class="step-card">
+              <div class="step-badge">04</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  Sanity Check (Teste de Ambiente)
+                  <span class="env-badge browser">Navegador</span>
+                </h3>
+                <p class="step-desc">
+                  Com o servidor ativo no terminal do VS Code, clique no botão abaixo para verificar se o banco de dados responde adequadamente pelo navegador:
+                </p>
+                <div class="step-actions">
+                  <a href="http://localhost:3000/agentes" target="_blank" class="btn-primary">Acessar Banco de Dados Local</a>
+                </div>
+                
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 20px;">
+                  Você também pode testar se o Node.js e o NPM estão configurados rodando no emulador de console abaixo:
+                </p>
+                
+                <!-- Terminal Simulator Widget -->
+                <div class="sanity-simulator">
+                  <div class="sim-header">
+                    <div class="sim-dots">
+                      <div class="sim-dot"></div>
+                      <div class="sim-dot"></div>
+                      <div class="sim-dot"></div>
+                    </div>
+                    <div class="sim-title">simulador de terminal</div>
+                  </div>
+                  <div class="sim-body" id="sanity-terminal-output">
+                    <div class="sim-line">
+                      <span class="sim-prompt">$</span>
+                      <span class="sim-input"># Teste comandos rápidos de versão do Node</span>
+                    </div>
+                  </div>
+                  <div class="sim-controls">
+                    <button class="btn-primary" id="btn-sim-node">node -v</button>
+                    <button class="btn-primary" id="btn-sim-npm">npm -v</button>
+                    <button class="btn-secondary" id="btn-sim-clear">Limpar Console</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Checklist -->
+          <div class="checklist-container">
+            <div class="checklist-title">Checklist do Módulo 02</div>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec2">
+              <span class="checklist-text">Criei a pasta missao-backend e abri como workspace no VS Code.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec2">
+              <span class="checklist-text">Criei o arquivo db.json contendo a lista inicial de agentes.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec2">
+              <span class="checklist-text">Iniciei o json-server usando o npx no terminal do VS Code.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec2">
+              <span class="checklist-text">Validei o acesso direto ao endpoint local pelo navegador.</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- SECTION 3: OPERAÇÕES CRUD -->
+        <section class="content-section" id="sec3">
+          <div class="section-header">
+            <div class="section-subtitle">
+              <span>Módulo 03 // Exercícios e Desafios</span>
+              <span class="env-badge mixed">Navegador + VS Code</span>
+            </div>
+            <h2 class="section-title">Operações CRUD na API</h2>
+            <div class="section-time-indicator">⏱ 25 Minutos</div>
+          </div>
+
+          <p style="margin-bottom: 20px;">
+            Abaixo estão os scripts para realizar as quatro operações básicas do banco de dados (CRUD). Copie e execute-os no <strong>Console do Navegador (F12)</strong> desta página para manipular a sua API local em execução.
+          </p>
+
+          <div class="step-container">
+            
+            <!-- Missão 1: GET -->
+            <div class="step-card">
+              <div class="step-badge">R</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  1. Leitura (GET)
+                  <span class="env-badge browser">Navegador (F12)</span>
+                </h3>
+                <p class="step-desc">Lista os dados contidos no servidor local.</p>
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">JavaScript (Console F12)</span>
+                    <button class="btn-copy" data-clipboard="get-request-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="get-request-code">fetch('http://localhost:3000/agentes')
+  .then(resposta => resposta.json())
+  .then(dados => console.log("Agentes lidos:", dados));</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Missão 2: POST -->
+            <div class="step-card">
+              <div class="step-badge">C</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  2. Criação (POST)
+                  <span class="env-badge browser">Navegador (F12)</span>
+                </h3>
+                <p class="step-desc">Insere um novo agente. O servidor atribui o ID e persiste o novo registro em <code>db.json</code>.</p>
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">JavaScript (Console F12)</span>
+                    <button class="btn-copy" data-clipboard="post-request-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="post-request-code">fetch('http://localhost:3000/agentes', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ id: "3", nome: "Morpheus", status: "Procurado" })
+})
+.then(resposta => resposta.json())
+.then(dados => console.log("Agente criado:", dados));</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Missão 3: PUT -->
+            <div class="step-card">
+              <div class="step-badge">U</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  3. Atualização (PUT)
+                  <span class="env-badge browser">Navegador (F12)</span>
+                </h3>
+                <p class="step-desc">Substitui ou atualiza um registro existente identificando-o pelo ID na URL (ex: atualizando status da Trinity no ID 2).</p>
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">JavaScript (Console F12)</span>
+                    <button class="btn-copy" data-clipboard="put-request-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="put-request-code">fetch('http://localhost:3000/agentes/2', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nome: "Trinity", status: "Ativo" })
+})
+.then(resposta => resposta.json())
+.then(dados => console.log("Agente atualizado:", dados));</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Missão 4: DELETE -->
+            <div class="step-card">
+              <div class="step-badge">D</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  4. Exclusão (DELETE)
+                  <span class="env-badge browser">Navegador (F12)</span>
+                </h3>
+                <p class="step-desc">Remove um registro permanentemente passando o ID do elemento correspondente na URL.</p>
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">JavaScript (Console F12)</span>
+                    <button class="btn-copy" data-clipboard="delete-request-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="delete-request-code">fetch('http://localhost:3000/agentes/3', {
+  method: 'DELETE'
+})
+.then(resposta => console.log("Status da exclusão:", resposta.status));</code></pre>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Live Server Monitor Integration Panel -->
+          <div class="live-server-panel">
+            <div class="live-panel-header">
+              <div class="live-panel-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                  <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                  <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                  <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                  <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+                PAINEL OPERACIONAL DA API LOCAL (PORTA 3000)
+              </div>
+              <span class="live-panel-status" id="live-status-badge">DESCONECTADO</span>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
+              Este painel de testes interage em tempo real com o servidor na máquina local. Quando a API estiver online, os dados do seu arquivo <code>db.json</code> serão carregados abaixo dinamicamente.
+            </p>
+
+            <h4 style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">BANCO DE DADOS LOCAL:</h4>
+            
+            <div class="agent-grid" id="live-agents-container">
+              <!-- Default Offline State -->
+              <div class="agent-tag-card" style="border-color: var(--border-color); opacity: 0.5;">
+                <div class="agent-info">
+                  <span class="agent-name">Servidor Offline</span>
+                  <span class="agent-id">Inicie o json-server</span>
+                </div>
+                <span class="agent-status-badge other">--</span>
+              </div>
+            </div>
+
+            <!-- Dashboard Sandbox CRUD Sender Form -->
+            <form class="sandbox-form" id="sandbox-post-form">
+              <div class="form-title">
+                <span>📡 Terminal de Envio de Requisições</span>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">ID do Agente</label>
+                  <input type="text" class="form-input" id="sandbox-agent-id" placeholder="Ex: 3" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nome do Agente (Opcional no DELETE)</label>
+                  <input type="text" class="form-input" id="sandbox-agent-name" placeholder="Ex: Morpheus">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Status (Opcional no DELETE)</label>
+                  <select class="form-select" id="sandbox-agent-status">
+                    <option value="Ativo">Ativo</option>
+                    <option value="Oculto">Oculto</option>
+                    <option value="Procurado">Procurado</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-actions-row">
+                <button type="button" class="btn-primary" id="btn-submit-post">Disparar POST (Criar)</button>
+                <button type="button" class="btn-primary btn-yellow" id="btn-submit-put">Disparar PUT (Atualizar)</button>
+                <button type="button" class="btn-primary btn-red" id="btn-submit-delete">Disparar DELETE (Excluir)</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Section Checklist -->
+          <div class="checklist-container">
+            <div class="checklist-title">Checklist do Módulo 03</div>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec3">
+              <span class="checklist-text">Abri o console de desenvolvedor (F12) do navegador nesta aba.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec3">
+              <span class="checklist-text">Executei uma requisição GET no console e consultei a resposta.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec3">
+              <span class="checklist-text">Executei o POST no console para adicionar um novo agente.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec3">
+              <span class="checklist-text">Realizei uma atualização PUT para alterar o status da Trinity (ID 2).</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec3">
+              <span class="checklist-text">Executei uma operação DELETE para apagar o registro cadastrado.</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- SECTION 4: CONECTANDO O FRONTEND AO BACKEND -->
+        <section class="content-section" id="sec4">
+          <div class="section-header">
+            <div class="section-subtitle">
+              <span>Módulo 04 // Integração Prática</span>
+              <span class="env-badge vscode">VS Code</span>
+            </div>
+            <h2 class="section-title">Conectando o Frontend ao Backend</h2>
+            <div class="section-time-indicator">⏱ 20 Minutos</div>
+          </div>
+
+          <p style="margin-bottom: 24px;">
+            Agora, em vez de rodar comandos avulsos no console do navegador, vamos construir um aplicativo real no seu computador. Escreveremos a estrutura HTML no <code>index.html</code> e as funções de comunicação no <code>app.js</code>, ligando os botões na tela diretamente ao banco de dados.
+          </p>
+
+          <div class="step-container">
+            <!-- Passo 1 -->
+            <div class="step-card">
+              <div class="step-badge">01</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  A Interface Visual (HTML)
+                  <span class="env-badge vscode">VS Code</span>
+                </h3>
+                <p class="step-desc">
+                  No arquivo <code>index.html</code> que você criou na pasta do seu projeto via VS Code, adicione o formulário de cadastro, os botões operacionais e a lista vazia (<code>&lt;ul&gt;</code>) que usaremos para renderizar os agentes cadastrados:
+                </p>
+
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">HTML (index.html)</span>
+                    <button class="btn-copy" data-clipboard="integration-html-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="integration-html-code">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Painel de Controle - Agentes&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+    input, select, button { padding: 8px; margin: 4px 0; display: inline-block; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 8px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Controle de Agentes (Matrix)&lt;/h1&gt;
+  
+  &lt;!-- Formulário para Criar/Atualizar --&gt;
+  &lt;form id="form-agente"&gt;
+    &lt;input type="text" id="agente-id" placeholder="ID do Agente (ex: 3)" required&gt;
+    &lt;input type="text" id="agente-nome" placeholder="Nome do Agente"&gt;
+    &lt;select id="agente-status"&gt;
+      &lt;option value="Ativo"&gt;Ativo&lt;/option&gt;
+      &lt;option value="Oculto"&gt;Oculto&lt;/option&gt;
+      &lt;option value="Procurado"&gt;Procurado&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br&gt;
+    &lt;button type="button" onclick="salvarAgente()"&gt;Salvar Agente (POST/PUT)&lt;/button&gt;
+    &lt;button type="button" onclick="excluirAgente()"&gt;Excluir Agente (DELETE)&lt;/button&gt;
+  &lt;/form&gt;
+
+  &lt;!-- Lista de Visualização --&gt;
+  &lt;h2&gt;Agentes no Banco de Dados&lt;/h2&gt;
+  &lt;button onclick="buscarAgentes()"&gt;Atualizar Lista (GET)&lt;/button&gt;
+  &lt;ul id="lista-agentes"&gt;&lt;/ul&gt;
+
+  &lt;script src="app.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Passo 2 -->
+            <div class="step-card">
+              <div class="step-badge">02</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  O Script de Integração (JavaScript)
+                  <span class="env-badge vscode">VS Code</span>
+                </h3>
+                <p class="step-desc">
+                  No seu arquivo <code>app.js</code> local, implemente as funções de comunicação com o servidor e manipulação de DOM (<code>innerHTML</code>) para injetar os dados dinamicamente no HTML do seu navegador:
+                </p>
+
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">JavaScript (app.js)</span>
+                    <button class="btn-copy" data-clipboard="integration-js-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="integration-js-code">const urlBase = 'http://localhost:3000/agentes';
+
+// 1. Função de Leitura (GET): Carrega os agentes e desenha na tela
+function buscarAgentes() {
+  fetch(urlBase)
+    .then(resposta => {
+      if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
+      return resposta.json();
+    })
+    .then(dados => {
+      const lista = document.getElementById('lista-agentes');
+      lista.innerHTML = ''; // Limpa a lista antes de renderizar
+      
+      dados.forEach(agente => {
+        const item = document.createElement('li');
+        item.innerHTML = `
+          <span><strong>[ID ${agente.id}]</strong> ${agente.nome} - <em>${agente.status}</em></span>
+        `;
+        lista.appendChild(item);
+      });
+    })
+    .catch(erro => console.error("Falha ao buscar:", erro.message));
+}
+
+// 2. Função de Criação/Edição (POST/PUT): Cria se não existe, atualiza se existe
+async function salvarAgente() {
+  const id = document.getElementById('agente-id').value.trim();
+  const nome = document.getElementById('agente-nome').value.trim();
+  const status = document.getElementById('agente-status').value;
+
+  if (!id) return alert('O ID é obrigatório!');
+
+  try {
+    // Verifica primeiro se o ID já existe
+    const checkRes = await fetch(`${urlBase}/${id}`);
+    const existe = checkRes.ok; // se status for 200 (ok), o registro existe
+
+    const url = existe ? `${urlBase}/${id}` : urlBase;
+    const metodo = existe ? 'PUT' : 'POST';
+    
+    const res = await fetch(url, {
+      method: metodo,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, nome, status })
+    });
+
+    if (!res.ok) throw new Error(`Erro: ${res.status}`);
+    
+    alert(existe ? 'Agente atualizado com sucesso!' : 'Agente criado com sucesso!');
+    buscarAgentes(); // Atualiza a lista na tela
+  } catch(erro) {
+    console.error("Falha ao salvar:", erro.message);
+  }
+}
+
+// 3. Função de Exclusão (DELETE): Exclui do banco pelo ID
+function excluirAgente() {
+  const id = document.getElementById('agente-id').value.trim();
+  if (!id) return alert('Digite o ID do agente para excluí-lo.');
+
+  fetch(`${urlBase}/${id}`, {
+    method: 'DELETE'
+  })
+  .then(resposta => {
+    if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
+    alert('Agente deletado do sistema!');
+    buscarAgentes(); // Recarrega a lista na tela
+  })
+  .catch(erro => console.error("Falha ao excluir:", erro.message));
+}
+
+// Carrega os dados automaticamente assim que a página terminar de carregar
+window.onload = buscarAgentes;</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Passo 3 -->
+            <div class="step-card">
+              <div class="step-badge">03</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  O Teste Final (Fluxo de Dados Completo)
+                  <span class="env-badge browser">Navegador</span>
+                </h3>
+                <p class="step-desc">
+                  Abra o arquivo <code>index.html</code> local do seu computador no navegador. A tabela deverá exibir automaticamente o Neo e a Trinity carregados diretamente do seu <code>db.json</code> local!
+                </p>
+                <p class="step-desc">
+                  Digite o ID <code>3</code>, Nome <code>Morpheus</code> e clique em <strong>Salvar Agente</strong>. Veja que o Morpheus aparece na lista imediatamente. Se você alterar o status dele e salvar novamente, ele atualiza na hora!
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Section Checklist -->
+          <div class="checklist-container">
+            <div class="checklist-title">Checklist do Módulo 04</div>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec4">
+              <span class="checklist-text">Adicionei a estrutura HTML do formulário e da lista no meu index.html local.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec4">
+              <span class="checklist-text">Codifiquei a função buscarAgentes() para renderizar elementos DOM no app.js.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec4">
+              <span class="checklist-text">Desenvolvi a função salvarAgente() operando requisições condicionais POST ou PUT.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec4">
+              <span class="checklist-text">Codifiquei a função excluirAgente() executando o verbo DELETE.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec4">
+              <span class="checklist-text">Abri a página local e realizei as quatro ações do CRUD de ponta a ponta na tela.</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- SECTION 5: PROTOCOLO DE SALVAMENTO -->
+        <section class="content-section" id="sec5">
+          <div class="section-header">
+            <div class="section-subtitle">
+              <span>Módulo 05 // Consolidação</span>
+              <span class="env-badge vscode">VS Code</span>
+            </div>
+            <h2 class="section-title">Sincronização e Salvamento</h2>
+            <div class="section-time-indicator">⏱ 15 Minutos</div>
+          </div>
+
+          <p style="margin-bottom: 24px;">
+            Agora que o sistema está em pleno funcionamento e integrado, vamos configurar as exclusões do Live Server para não causar loops de carregamento indesejados e salvar nosso código na nuvem.
+          </p>
+
+          <div class="step-container">
+            <!-- Passo 1: Solução Live Server ignore db.json -->
+            <div class="step-card">
+              <div class="step-badge">01</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  Evitar Auto-Recarregamentos do Live Server
+                  <span class="env-badge vscode">VS Code</span>
+                </h3>
+                <p class="step-desc">
+                  Por padrão, se você estiver usando a extensão <strong>Live Server</strong> do VS Code, a sua página do navegador irá recarregar automaticamente toda vez que você cadastrar, alterar ou deletar um agente (porque a mudança altera o arquivo <code>db.json</code> e o Live Server assume que um arquivo de código foi alterado).
+                </p>
+                <p class="step-desc">
+                  Para corrigir isso, adicione a configuração abaixo nas configurações globais do VS Code (Arquivo > Preferências > Configurações > procure por "ignore files" no Live Server), ou crie uma pasta chamada <code>.vscode</code> na raiz do projeto com um arquivo <code>settings.json</code> contendo:
+                </p>
+
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">JSON (.vscode/settings.json)</span>
+                    <button class="btn-copy" data-clipboard="live-server-ignore-code">
+                      <span>Copiar código</span>
+                    </button>
+                  </div>
+                  <pre><code id="live-server-ignore-code">{
+  "liveServer.settings.ignoreFiles": [
+    "**/db.json"
+  ]
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Passo 2 -->
+            <div class="step-card">
+              <div class="step-badge">02</div>
+              <div class="step-main">
+                <h3 class="step-title">
+                  Salvar com Controle de Versão (Opcional)
+                  <span class="env-badge vscode">VS Code</span>
+                </h3>
+                <p class="step-desc">
+                  Se a turma estiver utilizando o Git para versionamento, rode no terminal da pasta do seu projeto para salvar o commit inicial da missão concluída:
+                </p>
+                <div class="code-container">
+                  <div class="code-header">
+                    <span class="code-lang">Git terminal</span>
+                    <button class="btn-copy" data-clipboard="git-commands-code">
+                      <span>Copiar comandos</span>
+                    </button>
+                  </div>
+                  <pre><code id="git-commands-code">git init
+git add .
+git commit -m "feat: missao inaugural backend concluida"</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Checklist -->
+          <div class="checklist-container">
+            <div class="checklist-title">Checklist do Módulo 05</div>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec5">
+              <span class="checklist-text">Criei a pasta .vscode e configurei o arquivo settings.json para ignorar o db.json.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec5">
+              <span class="checklist-text">Verifiquei que a página não recarrega do zero ao realizar operações de escrita no formulário.</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" class="checklist-checkbox" data-section="sec5">
+              <span class="checklist-text">Salvei a versão final do projeto com Git (opcional).</span>
+            </label>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
