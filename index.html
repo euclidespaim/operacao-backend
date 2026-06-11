@@ -725,6 +725,36 @@
               </div>
             </div>
           </div>
+          
+          <!-- CAUTION BLOCK FOR VERCEL CORS / PRIVATE NETWORK ACCESS -->
+          <div class="cyber-alert warning" style="margin-top: 24px; margin-bottom: 24px; padding: 16px 20px; border-color: var(--neon-yellow); background: rgba(255, 221, 87, 0.05); border-left: 4px solid var(--neon-yellow); border-radius: 4px;">
+            <span class="cyber-alert-icon" style="font-size: 1.2rem; float: left; margin-right: 12px; margin-top: 2px;">⚠️</span>
+            <div class="cyber-alert-text" style="overflow: hidden;">
+              <strong style="color: var(--neon-yellow); font-size: 0.9rem; display: block; margin-bottom: 8px;">Aviso de Segurança: Bloqueio de CORS na Vercel (HTTPS para HTTP Localhost)</strong>
+              <p style="font-size: 0.82rem; line-height: 1.5; color: var(--text-muted); margin: 0 0 12px 0;">
+                Se você está acessando este painel hospedado na <strong>Vercel (via HTTPS)</strong>, o navegador pode bloquear as chamadas de rede para a sua API rodando em <strong>localhost (via HTTP)</strong> devido às políticas de <em>Private Network Access (PNA)</em> do Google Chrome e políticas de <em>Conteúdo Misto (Mixed Content)</em>.
+              </p>
+              <div style="font-size: 0.8rem; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 4px; border-left: 3px solid var(--neon-cyan);">
+                <strong style="color: #fff; display: block; margin-bottom: 6px;">Como Resolver (Escolha uma opção):</strong>
+                <ul style="margin: 0; padding-left: 20px; color: var(--text-muted); line-height: 1.5;">
+                  <li style="margin-bottom: 8px;">
+                    <strong>Opção A (Recomendada - Sem Código):</strong> Desative temporariamente a barreira do navegador. Abra uma nova aba no Chrome, acesse <code style="color: var(--neon-cyan);">chrome://flags/#block-insecure-private-network-requests</code>, mude para <strong>Disabled</strong> e reinicie o navegador.
+                  </li>
+                  <li>
+                    <strong>Opção B (Via Código do json-server):</strong> Crie um arquivo chamado <code style="color: var(--neon-cyan);">cors-fix.js</code> na mesma pasta de <code style="color: var(--neon-cyan);">db.json</code> com o conteúdo:<br>
+                    <pre style="margin: 6px 0; background: #06090f; padding: 6px; border-radius: 4px; border: 1px solid #1b273b; font-size: 0.75rem; color: #a5d6ff;"><code>module.exports = (req, res, next) => {
+  res.header('Access-Control-Allow-Private-Network', 'true');
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+};</code></pre>
+                    E inicialize o json-server com o comando: <br>
+                    <code style="color: var(--neon-green);">npx json-server db.json --middlewares cors-fix.js</code>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           <div class="checklist-container">
             <div class="checklist-title">Checklist do Módulo 1.2</div>
             <label class="checklist-item"><input type="checkbox" class="checklist-checkbox" data-section="aula1-mod2"><span class="checklist-text">Criei a pasta missao-backend e abri no VS Code.</span></label>
@@ -1788,6 +1818,13 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors()); // Libera requisições de outras origens (CORS)
+
+// Permite requisições de sites públicos (Vercel) para a rede local (localhost)
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  next();
+});
+
 app.use(express.json()); // Habilita leitura de JSON
 
 let agentes = [
