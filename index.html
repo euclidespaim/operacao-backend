@@ -747,8 +747,11 @@
   res.header('Access-Control-Allow-Origin', '*');
   next();
 };</code></pre>
-                    E inicialize o json-server com o comando: <br>
-                    <code style="color: var(--neon-green);">npx json-server db.json --middlewares cors-fix.js</code>
+                    E inicialize o json-server especificando a versão <code style="color: var(--neon-cyan);">@0.17.4</code> com o comando: <br>
+                    <code style="color: var(--neon-green);">npx json-server@0.17.4 db.json --middlewares cors-fix.js</code>
+                    <div style="font-size: 0.75rem; color: var(--neon-yellow); margin-top: 4px;">
+                      ⚠️ <em>Nota: A versão padrão mais recente (json-server v1.0.0+) removeu a opção <code>--middlewares</code>, causando erros de "unknown option". Usar a versão <code>@0.17.4</code> é obrigatório para esse parâmetro funcionar.</em>
+                    </div>
                   </li>
                 </ul>
               </div>

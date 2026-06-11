@@ -26,7 +26,7 @@ export function initSandboxCrud() {
   function checkOffline() {
     if (!isLocalServerOnline()) {
       playBeep('error');
-      alert('⚠️ Erro de Rota! Não é possível disparar ações com o servidor offline.\nInicie o servidor (npx json-server db.json) no VS Code primeiro.');
+      alert('⚠️ Erro de Rota! Não é possível disparar ações com o servidor offline.\nInicie o servidor (npx json-server@0.17.4 db.json) no VS Code primeiro.');
       return true;
     }
     return false;
@@ -247,7 +247,7 @@ export function resetAgentsContainer() {
     <div class="agent-tag-card" style="border-color: rgba(255, 56, 96, 0.15); opacity: 0.7; grid-column: 1 / -1;">
       <div class="agent-info">
         <span class="agent-name" style="color: var(--neon-red);">Aguardando Conexão do Servidor...</span>
-        <span class="agent-id">Abra o terminal na pasta e execute: npx json-server db.json</span>
+        <span class="agent-id">Abra o terminal na pasta e execute: npx json-server@0.17.4 db.json</span>
       </div>
       <span class="agent-status-badge other">OFFLINE</span>
     </div>
