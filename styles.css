@@ -701,8 +701,8 @@ a:hover {
 
 .step-badge {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   background: var(--bg-secondary);
   border: 1px solid var(--neon-cyan);
@@ -712,12 +712,16 @@ a:hover {
   color: var(--neon-cyan);
   font-family: var(--font-mono);
   font-weight: bold;
-  font-size: 0.95rem;
+  font-size: 0.72rem;
+  text-align: center;
+  padding: 4px;
+  box-sizing: border-box;
   box-shadow: 0 0 6px var(--neon-cyan-glow);
 }
 
 .step-main {
   flex: 1;
+  min-width: 0;
 }
 
 .step-title {
@@ -860,6 +864,7 @@ a:hover {
   border: 1px solid var(--border-color);
   background: #06090f;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .code-header {
@@ -1021,6 +1026,30 @@ a:hover {
 }
 .btn-primary.btn-red:hover {
   box-shadow: 0 0 15px rgba(255, 56, 96, 0.3);
+}
+
+.btn-primary.btn-cyan {
+  border-color: var(--neon-cyan);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 100, 255, 0.05));
+}
+.btn-primary.btn-cyan:hover {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.btn-primary.btn-green {
+  border-color: var(--neon-green);
+  background: linear-gradient(135deg, rgba(0, 255, 102, 0.15), rgba(0, 200, 50, 0.05));
+}
+.btn-primary.btn-green:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+}
+
+.btn-primary.btn-purple {
+  border-color: #b82cf6;
+  background: linear-gradient(135deg, rgba(184, 44, 246, 0.15), rgba(150, 0, 200, 0.05));
+}
+.btn-primary.btn-purple:hover {
+  box-shadow: 0 0 15px rgba(184, 44, 246, 0.3);
 }
 
 .btn-secondary {
@@ -1388,3 +1417,339 @@ a:hover {
     height: auto;
   }
 }
+
+/* =============================================================
+   EVALUATION 1 & TEACHER MODE STYLES
+   ============================================================= */
+
+/* Locked Accordion Group */
+.class-accordion-group.locked .accordion-header:hover {
+  background: rgba(255, 56, 96, 0.03);
+}
+
+.class-accordion-group.locked .accordion-header-title {
+  color: var(--neon-red);
+}
+
+.class-accordion-group.locked .accordion-chevron {
+  color: var(--neon-red);
+}
+
+/* Evaluation Gate Screen */
+.evaluation-gate {
+  background: rgba(16, 22, 38, 0.5);
+  border: 1px dashed var(--neon-red);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  margin-bottom: 24px;
+  box-shadow: 0 0 15px rgba(255, 56, 96, 0.05);
+  animation: fadeIn 0.4s ease;
+}
+
+.gate-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  color: var(--neon-red);
+  text-shadow: 0 0 15px var(--neon-red-glow);
+  animation: blink 2s infinite ease-in-out;
+}
+
+.evaluation-gate h3 {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  color: var(--neon-red);
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+.evaluation-gate p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  max-width: 500px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.gate-error-message {
+  font-family: var(--font-mono);
+  font-weight: bold;
+}
+
+/* validation logs color codes */
+.val-log-info { color: var(--neon-cyan); }
+.val-log-success { color: var(--neon-green); font-weight: bold; }
+.val-log-fail { color: var(--neon-red); font-weight: bold; }
+.val-log-warn { color: var(--neon-yellow); }
+
+/* Cyber Modal Dialog (Teacher Authentication) */
+.cyber-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(6, 8, 14, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease;
+}
+
+.cyber-modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  width: 90%;
+  max-width: 440px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px var(--border-glow);
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.cyber-modal-header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 20px;
+}
+
+.modal-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--neon-green);
+  letter-spacing: 0.05em;
+}
+
+.cyber-modal-body {
+  padding: 24px 20px;
+}
+
+.cyber-modal-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Floating Teacher Panel */
+.teacher-floating-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 380px;
+  height: 400px;
+  background: rgba(10, 14, 23, 0.85);
+  border: 1px solid var(--neon-cyan);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--neon-cyan-glow);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-family: var(--font-sans);
+}
+
+.teacher-floating-panel.minimized {
+  height: 41px !important;
+}
+
+.teacher-panel-header {
+  height: 40px;
+  background: rgba(0, 240, 255, 0.15);
+  border-bottom: 1px solid var(--neon-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  cursor: move;
+  user-select: none;
+}
+
+.panel-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-badge {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.panel-title-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--neon-cyan);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 8px var(--neon-cyan-glow);
+}
+
+.panel-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-panel-minimize, .btn-panel-close {
+  background: none;
+  border: none;
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.btn-panel-minimize:hover, .btn-panel-close:hover {
+  background: rgba(0, 240, 255, 0.15);
+  border-radius: 3px;
+}
+
+.teacher-panel-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.teacher-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border-color);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.teacher-tab-btn:last-child {
+  border-right: none;
+}
+
+.teacher-tab-btn:hover {
+  background: rgba(0, 240, 255, 0.03);
+  color: var(--neon-cyan);
+}
+
+.teacher-tab-btn.active {
+  background: rgba(0, 240, 255, 0.08);
+  color: var(--neon-cyan);
+  border-bottom: 2px solid var(--neon-cyan);
+}
+
+.teacher-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: rgba(6, 8, 14, 0.4);
+}
+
+.teacher-tab-content {
+  display: none;
+  height: 100%;
+}
+
+.teacher-tab-content.active {
+  display: block;
+}
+
+/* Guidelines tab styling */
+.guideline-content {
+  font-size: 0.8rem;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+.guideline-section-title {
+  font-family: var(--font-mono);
+  color: var(--neon-cyan);
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  padding-bottom: 2px;
+}
+
+.guideline-list {
+  list-style: none;
+  margin-left: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guideline-list li {
+  position: relative;
+  padding-left: 12px;
+}
+
+.guideline-list li::before {
+  content: "»";
+  position: absolute;
+  left: 0;
+  color: var(--neon-cyan);
+}
+
+/* Solutions view */
+.solution-code-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.solution-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* Reports view */
+.report-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 255, 102, 0.05);
+  padding-bottom: 6px;
+}
+
+@media (max-width: 480px) {
+  .teacher-floating-panel {
+    width: calc(100% - 32px);
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+.hud-input:focus {
+  border-bottom-color: var(--neon-green) !important;
+  box-shadow: 0 4px 10px -4px var(--neon-green-glow);
+}
+
+

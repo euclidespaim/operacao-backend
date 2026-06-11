@@ -1,0 +1,19 @@
+{
+  "agentes": [
+    {
+      "id": "1",
+      "nome": "Neo",
+      "status": "Ativo"
+    },
+    {
+      "id": "2",
+      "nome": "Trinity",
+      "status": "Oculto"
+    },
+    {
+      "id": "3",
+      "nome": "Morpheus",
+      "status": "Procurado"
+    }
+  ]
+}
